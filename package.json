@@ -1,0 +1,68 @@
+{
+  "name": "skill-rake",
+  "version": "1.0.0",
+  "description": "This service combs through a code source (snippet, file, repo...) and detects skills present in the code.",
+  "main": "build/server/server.js",
+  "engines": {
+    "node": "9.7.1",
+    "npm": "6.6.0"
+  },
+  "scripts": {
+    "babel-node": "babel-node ./src/server/server --presets=env",
+    "build": "npm run remove-build && npm run build:server && npm run db:migrate",
+    "build:server": "./node_modules/.bin/babel -d ./build ./src -s --copy-files",
+    "build-and-start": "npm run build && npm start",
+    "db:migrate": "./node_modules/.bin/sequelize db:migrate",
+    "db:migrate:test": "NODE_ENV=test ./node_modules/.bin/sequelize db:migrate",
+    "db:migrate:seed": "./node_modules/.bin/sequelize db:seed --seed [name of file in /seeders folder]",
+    "db:migrate:seed:test": "NODE_ENV=test ./node_modules/.bin/sequelize db:seed --seed [name of file in /seeders folder]",
+    "db:reset": "./node_modules/.bin/sequelize db:migrate:undo:all && ./node_modules/.bin/sequelize db:migrate && npm run db:reset:seed",
+    "db:reset:test": "NODE_ENV=test ./node_modules/.bin/sequelize db:migrate:undo:all && NODE_ENV=test ./node_modules/.bin/sequelize db:migrate && npm run db:reset:seed:test",
+    "db:reset:seed": "./node_modules/.bin/sequelize db:seed:undo:all && ./node_modules/.bin/sequelize db:seed:all",
+    "db:reset:seed:test": "NODE_ENV=test ./node_modules/.bin/sequelize db:seed:undo:all && NODE_ENV=test ./node_modules/.bin/sequelize db:seed:all",
+    "heroku-postbuild": "npm run build",
+    "remove-build": "./node_modules/.bin/rimraf ./build",
+    "start": "NODE_ENV=production ./node_modules/.bin/forever -m 5 ./build/server/server.js",
+    "start:dev": "NODE_ENV=development nodemon --exec npm run babel-node ./src/server/server",
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andela-stuff/skill-rake.git"
+  },
+  "author": "Chieze Franklin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andela-stuff/skill-rake/issues"
+  },
+  "homepage": "https://github.com/andela-stuff/skill-rake#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "forever": "^0.15.3",
+    "jsonwebtoken": "^8.4.0",
+    "lodash": "^4.17.11",
+    "pg": "^7.8.0",
+    "pg-hstore": "^2.3.2",
+    "redis": "^2.8.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
+    "requestretry": "^3.1.0",
+    "rimraf": "^2.6.2",
+    "sequelize": "^4.42.0",
+    "sequelize-cli": "^5.4.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "nodemon": "^1.18.6"
+  }
+}

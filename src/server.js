@@ -27,30 +27,35 @@ app.post('/v1/query', async (req, res) => {
     method: 'GET'
   });
   let changes = getAddedContentFromPR(response);
+
   if (typeof skills === 'string') {
     // TODO: get a configuration (which has a list of skills)
-  } else {
-    skills.forEach(s => {
-      let skill;
-      if (typeof s === 'string') {
-        // TODO: get skill from database with given name
-      } else {
-        skill = s;
-      }
-
-      const regexes = skill.regexes;
-      for (let i = 0; i < regexes.length; i++) {
-        const regex = new RegExp(regexes[i], 'm'); // no g flag here; 1 match is enough
-        if (regex.test(changes)) {
-          hits.push({
-            name: skill.name,
-            hits: [{ text: regex.exec(changes)[0] }]
-          });
-          break;
-        }
-      }
-    });
+    // and convert 'skills' to array
   }
+
+  skills.forEach(s => {
+    let skill;
+    if (typeof s === 'string') {
+      // TODO: get skill from database with given name
+    } else {
+      skill = s;
+    }
+
+    const regexes = skill.regexes;
+    for (let i = 0; i < regexes.length; i++) {
+      const regex = new RegExp(regexes[i], 'm'); // no g flag here; 1 match is enough
+      if (regex.test(changes)) {
+        hits.push({
+          name: skill.name,
+          hits: [{
+            text: regex.exec(changes)[0],
+            type: 'snippet'
+          }]
+        });
+        break;
+      }
+    }
+  });
   // res.header('Content-Type', 'text/plain; charset=utf-8').status(200).send(added);
   res.status(200).send({ skills: hits });
 });
@@ -61,7 +66,7 @@ let server = app.listen(process.env.PORT || 3000, () => {
 })
 
 function getAddedContentFromPR(text) {
-  const regex = /^[\+](?!\+).+$/gm;
+  const regex = /(?<=(^\+))[^\+\n](.+)?$/gm;
   let match, matches = [];
   while ((match = regex.exec(text)) !== null) {
     matches.push(match[0]);

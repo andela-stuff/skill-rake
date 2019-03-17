@@ -2,14 +2,15 @@
   "name": "skill-rake",
   "version": "1.0.0",
   "description": "This service combs through a code source (snippet, file, repo...) and detects skills present in the code.",
-  "main": "build/server/server.js",
+  "main": "build/server.js",
   "engines": {
     "node": "9.7.1",
     "npm": "6.6.0"
   },
   "scripts": {
-    "babel-node": "babel-node ./src/server/server --presets=env",
-    "build": "npm run remove-build && npm run build:server && npm run db:migrate",
+    "babel-node": "babel-node ./src/server --presets=env",
+    "build": "npm run remove-build && npm run build:server",
+    "build2": "npm run remove-build && npm run build:server && npm run db:migrate",
     "build:server": "./node_modules/.bin/babel -d ./build ./src -s --copy-files",
     "build-and-start": "npm run build && npm start",
     "db:migrate": "./node_modules/.bin/sequelize db:migrate",
@@ -22,8 +23,8 @@
     "db:reset:seed:test": "NODE_ENV=test ./node_modules/.bin/sequelize db:seed:undo:all && NODE_ENV=test ./node_modules/.bin/sequelize db:seed:all",
     "heroku-postbuild": "npm run build",
     "remove-build": "./node_modules/.bin/rimraf ./build",
-    "start": "NODE_ENV=production ./node_modules/.bin/forever -m 5 ./build/server/server.js",
-    "start:dev": "NODE_ENV=development nodemon --exec npm run babel-node ./src/server/server",
+    "start": "NODE_ENV=production ./node_modules/.bin/forever -m 5 ./build/server.js",
+    "start:dev": "NODE_ENV=development nodemon --exec npm run babel-node ./src/server",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "repository": {
